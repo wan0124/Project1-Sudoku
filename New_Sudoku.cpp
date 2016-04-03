@@ -40,8 +40,8 @@ void Sudoku::readIn()
 }
 void Sudoku::solve()
 {
-	ansnum = 0;
-	for(j = 0 ; j < 9 ; j++)
+	ans=0;
+	for(j=0;j<9;j++)
 	{
 		if(!checkRow(j))
 		{
@@ -60,7 +60,7 @@ void Sudoku::solve()
 		}
 	}
 	recur();
-	if(ansnum==0)
+	if(ans==0)
 	{
 		printf("0\n");
 		exit(1);
