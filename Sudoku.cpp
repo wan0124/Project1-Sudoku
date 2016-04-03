@@ -1,13 +1,13 @@
 #include "Sudoku.h"
+#include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <cstdio>
 using namespace std;
 
-int count=81;
-int ans=0;
 int sum=0;
 
-Sudoku::giveQuestion()
+void Sudoku::giveQuestion()
 {
 	cout<<"0 4 0 2 1 0 0 0 0"<<"/n";
 	cout<<"8 0 7 0 0 0 0 9 0"<<"/n";
@@ -20,16 +20,13 @@ Sudoku::giveQuestion()
 	cout<<"0 0 0 0 2 7 0 5 0"<<"/n";
 }
 
-Sudoku::readIn()
+void Sudoku::readIn()
 {
-	for(int i=0;i<9;i++)
-		for(int j=0;i<9;j++)
-			scanf("%d",question[i][j]);
-	  
-	printf("/n");
+for( i = 0 ; i < 9 ; i++)
+	scanf("%d %d %d %d %d %d %d %d %d",&question[i][0],&question[i][1],&question[i][2],&question[i][3],&question[i][4],&question[i][5],&question[i][6],&question[i][7],&question[i][8]);	
 }
 
-Sudoku::changeNum(int a, int b)
+void Sudoku::changeNum(int a, int b)
 {
 	for(int i=0;i<9;i++)
 		for(int j=0;j<9;j++)
@@ -42,7 +39,7 @@ Sudoku::changeNum(int a, int b)
 			
 }
 
-Sudoku::changeCol(int a, int b)
+void Sudoku::changeCol(int a, int b)
 {   
 	int temp[3];
 	
@@ -55,7 +52,7 @@ Sudoku::changeCol(int a, int b)
 		}
 }
 
-Sudoku::changeRow(int a, int b)
+void Sudoku::changeRow(int a, int b)
 {
 	int temp[9];
 	
@@ -68,7 +65,7 @@ Sudoku::changeRow(int a, int b)
 		}
 }
 
-Sudoku::rotate(int n)
+void Sudoku::rotate(int n)
 {
 	int temp[9][9];
 	
@@ -98,7 +95,7 @@ Sudoku::rotate(int n)
 	}
 }
 
-Sudoku::flip(int n)
+void Sudoku::flip(int n)
 {
 	int temp[9][9];
 	
@@ -121,100 +118,115 @@ Sudoku::flip(int n)
 	}
 }
 
-Sudoku::transform()
+void Sudoku::transform()
 {
-	readIn();
 	change();
 	print();
 }
 
-Sudoku::change()
+void Sudoku::change()
 {
 	srand(time(NULL));
 	changeNum(rand()%9+1,rand()%9+1);
 	changeRow(rand()%3,rand()%3);
 	changeCol(rand()%3,rand()%3);
-	rotate(rand()%101);
+	rotate(rand()%3+1);
 	flip(rand()%2);
 }
 
-Sudoku::print()
+void Sudoku::print()
 {
-	for(int i = 0 ; i < 9 ; i++)
+	
+	for(i=0;i<9;i++)
 	{
-		for(int j = 0 ; j < 9 ; j++)
-			printf("%d ",question[i][j]);	
+		for(j=0;j<9;j++)
+			printf("%d ",answer[i][j]);	
 			
 	printf("\n");
 	}
 }
 
-Sudoku::solve()
+void Sudoku::solve()
 {
-	backtrace(count);
+	ans=0;
+	backtrace();
 	
 	if(ans==0)
 	{
 		printf("0\n");
+		exit(1);
 	}
 	
-	if(ans==1)
-	{
 		printf("1\n");
-		print();
-		return 0;
-	}	
-	
-	if(ans==2)
-	{
-		printf("2\n");
-	}
+		print();	
 }
 
-Sudoku::backtrace(int count)
+bool Sudoku::backtrace()
 {
-	int rowIndex=count/9;
-	int colIndex=count%9;
+	int rowIndex=0;
+	int colIndex=0;
+	int num;
+	int a;
+	int sum;
 	
-	for(int i=0;i<9;i++)
-		for(int j=0;j<9;j++)
-			if(question[i][j]!=0)
-				sum++;
-				
-	if(sum==81)
-	{
-		ans++;
-		
-		if(ans>1)
-			return 1;
-		
-	}
+    for(i=0;i<9;i++)
+		for(j=0;j<9;j++)
+			if(question[i][j]==0)
+			{	
+				a=1;
+				rowIndex=i;
+				colIndex=j;
+				break;
+			}
 	
-	if(question[rowIndex][colIndex]==0)
-	{
-		for(int i=1;i<=9;i++){
-			question[rowIndex][colIndex]=i;
-			if(check(rowIndex,colIndex))
-				backtrace(count+1);
+	if(a==0)
+	{	
+		sum=0;
+		for(i=0;i<9;i++)
+			for(j=0;j<9;j++)
+				if(question[i][j]!=0)
+					sum++;
+		if(sum==81)
+		{
+			ans++;
+		
+			if(ans>1)
+			{
+				printf("2\n");
+				exit(1);
+			}
+		
+			for(i=0;i<9;i++)
+				for(j=0;j<9;j++)
+					answer[i][j]=question[i][j];
 		}
-	question[rowIndex][colIndex]=0;
+		return false;
 	}
 	
-	else
+	for(num=1;num<10;num++)
 	{
-		backtrace(count+1);
+		if(check(rowIndex,colIndex))
+		{
+			question[rowIndex][colIndex]=num;
+			if(backtrace())	
+				return true;
+			else	
+				question[rowIndex][colIndex]=0;
+		}
 	}
 	
-}
+	return false;
+			
+}	
 
 bool Sudoku::check(int row,int col)
 {
-	for(int i=0;i<9;i++)
+	for(i=0;i<9;i++)
 		if(question[row][i]==question[row][col] && i!=col)
 			return false;
 	
 	
-	for(int i=0;i<9;i++)
+	for(i=0;i<9;i++)
 		if(question[i][col]==question[row][col] && i!=row)
 			return false;
 	
@@ -222,10 +234,11 @@ bool Sudoku::check(int row,int col)
 	int tmpRow=row/3*3;
 	int tmpCol=col/3*3;
 	
-	for(int i=tmpRow;i<tmpRow+3;i++)
-		for(int j=tmpCol;j<tmpCol+3;j++)
+	for(i=tmpRow;i<tmpRow+3;i++)
+		for(j=tmpCol;j<tmpCol+3;j++)
 			if(question[i][j]==question[row][col] && i!=row && j!=col)
 				return false;
 	
 	return true;
 }
+
