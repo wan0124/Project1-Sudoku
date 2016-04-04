@@ -82,8 +82,6 @@ void Sudoku::changeCol(int a,int b)
 
 void Sudoku::rotate(int n)
 {
-	if(n<0||n>100) return;
-				
 	int i,j,k,temp[9][9];
 	
 	if(n>=4) 
