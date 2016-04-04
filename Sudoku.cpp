@@ -210,7 +210,7 @@ bool Sudoku::backtrack()
 			
 			for(i=0;i<9;i++)
 				for(j=0;j<9;j++)
-					answer[i][j] = question[i][j];
+					answer[i][j]=question[i][j];
 		}		
 		return false;
 	}
@@ -237,11 +237,11 @@ bool Sudoku::checkRow(int n)
 	
 	for(i=0;i<9;i++)
 	{
-		if(question[n][i] > 0)
+		if(question[n][i]>0)
 		{
 			check[question[n][i]-1]++;
 			
-			if(check[question[n][i]-1] != 1)
+			if(check[question[n][i]-1]!=1)
 				return false;
 		}
 	}
@@ -256,11 +256,11 @@ bool Sudoku::checkCol(int n)
 	
 	for(i=0;i<9;i++)
 	{
-		if(question[i][n] > 0)
+		if(question[i][n]>0)
 		{
 			check[question[i][n]-1]++;
 			
-			if(check[question[i][n]-1]!= 1)
+			if(check[question[i][n]-1]!=1)
 				return false;
 		}
 	}
@@ -277,18 +277,18 @@ bool Sudoku::checkCell(int n)
 	{
 		col = 3*((n-1)/3)+(i/3);
 		row = (i%3)+3*((n-1)%3);
-		if(question[col][row] > 0)
+		if(question[col][row]>0)
 		{
 			check[question[col][row]-1]++;
 			
-			if(check[question[col][row]-1]!= 1)
+			if(check[question[col][row]-1]!=1)
 				return false;
 		}
 	}
 	return true;
 }
 
-bool  Sudoku::checkall(int col , int row ,int num)
+bool  Sudoku::checkall(int col,int row,int num)
 {
 	int cell=3*(col/3)+(row/3)+1;
 	int tmpCol,tmpRow;
