@@ -1,244 +1,327 @@
-#include "Sudoku.h"
-#include <iostream>
-#include <ctime>
-#include <cstdlib>
-#include <cstdio>
-using namespace std;
+#include"Sudoku.h"
+#include<iostream>
+#include<cstdlib>
+#include<cstdio>
+#include<ctime>
 
-int sum=0;
+
+using namespace std;
 
 void Sudoku::giveQuestion()
 {
-	cout<<"0 4 0 2 1 0 0 0 0"<<"/n";
-	cout<<"8 0 7 0 0 0 0 9 0"<<"/n";
-	cout<<"2 0 0 8 0 0 4 0 1"<<"/n";
-	cout<<"3 0 0 0 0 2 9 0 5"<<"/n";
-	cout<<"0 0 5 7 0 8 6 0 0"<<"/n";
-	cout<<"7 0 6 5 0 0 0 0 4"<<"/n";
-	cout<<"5 0 1 0 0 4 0 0 9"<<"/n";
-	cout<<"0 6 0 0 0 0 7 0 8"<<"/n";
-	cout<<"0 0 0 0 2 7 0 5 0"<<"/n";
+	int myQ[9][9] = 
+	{
+		{0,4,0,2,1,0,0,0,0},
+		{8,0,7,0,0,0,0,9,0},
+		{2,0,0,8,0,0,4,0,1},
+		{3,0,0,0,0,2,9,0,5},
+		{0,0,5,7,0,8,6,0,0},
+		{7,0,6,5,0,0,0,0,4},
+		{5,0,1,0,0,4,0,0,9},
+		{0,6,0,0,0,0,7,0,8},
+		{0,0,0,0,2,7,0,5,0}
+	};
+	
+	for(i=0;i<9;i++)
+	{
+		for(j=0;j<9;j++)
+			printf("%d ",myQ[i][j]);
+			
+		printf("\n");
+	}
 }
 
 void Sudoku::readIn()
 {
-for( i = 0 ; i < 9 ; i++)
-	scanf("%d %d %d %d %d %d %d %d %d",&question[i][0],&question[i][1],&question[i][2],&question[i][3],&question[i][4],&question[i][5],&question[i][6],&question[i][7],&question[i][8]);	
+	for(i=0;i<9;i++)
+		for(j=0;j<9;j++)
+	{
+		scanf("%d ",&question[i][j]);	
+	}
+
 }
 
-void Sudoku::changeNum(int a, int b)
+void Sudoku::changeNum(int a , int b)
 {
-	for(int i=0;i<9;i++)
-		for(int j=0;j<9;j++)
+	for(i=0;i<9;i++)
+		for(j=0;j<9;j++)
 		{
 			if(question[i][j]==a)
-				question[i][j]=b;
-			else if(question[i][j]==b)
-				question[i][j]==a;
-		}
-			
-}
-
-void Sudoku::changeCol(int a, int b)
-{   
-	int temp[3];
-	
-	for(int i=0;i<9;i++)
-		for(int j=0;j<3;j++)
-		{
-		temp[j]=question[i][a+j];
-		question[i][a+j]=question[i][b+j];
-		question[i][b+j]=temp[j];
+				question[i][j] = b;
+			else if(question[i][j] == b)
+				question[i][j] = a;
 		}
 }
 
-void Sudoku::changeRow(int a, int b)
+void Sudoku::changeRow(int a,int b)
 {
-	int temp[9];
+	int i,j,temp[3][9];
 	
-	for(int i=0;i<3;i++)
-		for(int j=0;j<9;j++)
+	for(i=0;i<3;i++)
+		for(j=0;j<9;j++)
 		{
-		temp[j]=question[i+a][j];
-		question[a+i][j]=question[b+i][j];
-		question[b+i][j]=temp[j];
+			temp[i][j]=question[a*3+i][j];
+			question[a*3+i][j] = question[b*3+i][j];
+			question[b*3+i][j] = temp[i][j];
 		}
 }
+	
+void Sudoku::changeCol(int a,int b)
+{
+	int i,j,temp[3][9];
+				
+	for(i=0;i<3;i++)
+		for(j=0;j<9;j++)
+		{
+			temp[i][j]=question[j][a*3+i];
+ 			question[j][a*3+i]=question[j][b*3+i];
+ 			question[j][b*3+i]=temp[i][j];
+ 		}
+}
+	
 
 void Sudoku::rotate(int n)
 {
-	int temp[9][9];
+	if(n<0||n>100) return;
+				
+	int i,j,k,temp[9][9];
 	
-	for(int i=0;i<9;i++)
-		for(int j=0;j<9;j++)
-			temp[i][j]=question[i][j];
-			
-	if(n%4==1)
+	if(n>=4) 
+		n=n%4;
+		
+	if(n==0) 
+		return;
+				
+	for(k=0;k<n;k++)
 	{
-		for(int i=0;i<9;i++)
-			for(int j=0;j<9;j++)
-				question[j][8-i]=temp[i][j];
-	}
-	
-	else if(n%4==2)
-	{
-		for(int i=0;i<9;i++)
-			for(int j=0;j<9;j++)
-				question[8-i][8-j]=temp[i][j];
-	}
-	
-	else if (n%4==3)
-	{
-		for(int i=0;i<9;i++)
-			for(int j=0;j<9;j++)
-				question[j][8-i]=temp[i][j];
+		for(i=0;i<9;i++)
+			for(j=0;j<9;j++) 
+				temp[i][j]=question[8-j][i];
+		for(i=0;i<9;i++)
+			for(j=0;j<9;j++) 
+				question[i][j]=temp[i][j];
 	}
 }
 
 void Sudoku::flip(int n)
 {
-	int temp[9][9];
-	
-	for(int i=0;i<9;i++)
-		for(int j=0;j<9;j++)
-			temp[i][j]=question[i][j];
-			
-	if(n==0)
-	{
-		for(int i=0;i<9;i++)
-			for(int j=0;j<9;j++)
-				question[i][j]=temp[8-i][j];
-		
-	}
-	else if(n==1)
-	{
-		for(int i=0;i<9;i++)
-			for(int j=0;j<9;j++)
-				question[i][j]=temp[i][8-j];
-	}
-}
+   int temp;
+   if (n==0)
+   {
+      for(i=0;i<4;i++)
+	  {
+         for(j=0;j<9;j++)
+		 {
+            temp=question[i][j];
+            question[i][j]=question[8-i][j];
+            question[8-i][j]=temp;
+         }
+      }  
+   }
+   
+   if (n==1)
+   {
+      for(i=0;i<4;i++)
+	  {
+         for(j=0;j<9;j++)
+		 {
+            temp=question[j][i];
+            question[j][i]=question[j][8-i];
+            question[j][8-i]=temp;
+         }
+      } 
+   }   
+} 
 
 void Sudoku::transform()
 {
-	change();
-	print();
+   srand(time(NULL));
+   changeNum(rand()%9+1,rand()%9+1);
+   changeRow(rand()%3,rand()%3);
+   changeCol(rand()%3,rand()%3);
+   rotate(rand()%4);
+   flip(rand()%2);
+   print();
 }
 
-void Sudoku::change()
-{
-	srand(time(NULL));
-	changeNum(rand()%9+1,rand()%9+1);
-	changeRow(rand()%3,rand()%3);
-	changeCol(rand()%3,rand()%3);
-	rotate(rand()%3+1);
-	flip(rand()%2);
-}
 
-void Sudoku::print()
-{
-	
-	for(i=0;i<9;i++)
-	{
-		for(j=0;j<9;j++)
-			printf("%d ",answer[i][j]);	
-			
-	printf("\n");
-	}
-}
 
 void Sudoku::solve()
 {
-	ans=0;
-	backtrace();
+	ans =0;
+	for(j=0;j<9;j++)
+	{
+		if(!checkRow(j)||!checkCol(j)||!checkCell(j+1))
+		{
+			printf("0\n");
+			exit(1);
+		}
+	}
+	
+	backtrack();
 	
 	if(ans==0)
 	{
 		printf("0\n");
 		exit(1);
 	}
-	
-		printf("1\n");
-		print();	
-}
 
-bool Sudoku::backtrace()
-{
-	int rowIndex=0;
-	int colIndex=0;
-	int num;
-	int a;
-	int sum;
+	printf("1\n");	
 	
-    for(i=0;i<9;i++)
+	for(i=0;i<9;i++)
+	{
 		for(j=0;j<9;j++)
+			printf("%d ",answer[i][j]);
+			
+		printf("\n");
+	}
+
+}
+bool Sudoku::backtrack()
+{
+	int cell;
+	int num;
+	int col=0;
+	int row=0;
+	int a=0;
+    for(i=0;i<9;i++)
+	{
+		for(j=0;j<9;j++)
+		{
 			if(question[i][j]==0)
 			{	
 				a=1;
-				rowIndex=i;
-				colIndex=j;
+				col=i;
+				row=j;
 				break;
 			}
+		}
+	}
 	
 	if(a==0)
-	{	
-		sum=0;
-		for(i=0;i<9;i++)
-			for(j=0;j<9;j++)
-				if(question[i][j]!=0)
-					sum++;
-		if(sum==81)
+	{
+		if(checkCol(8) && checkCell(9) && checkRow(8))
 		{
 			ans++;
-		
+			
 			if(ans>1)
 			{
 				printf("2\n");
 				exit(1);
 			}
-		
+			
 			for(i=0;i<9;i++)
 				for(j=0;j<9;j++)
-					answer[i][j]=question[i][j];
-		}
+					answer[i][j] = question[i][j];
+		}		
 		return false;
 	}
 	
 	for(num=1;num<10;num++)
 	{
-		if(check(rowIndex,colIndex))
-		{
-			question[rowIndex][colIndex]=num;
-			if(backtrace())	
+		if(checkall(col,row,num))
+		{			
+			question[col][row]=num;
+			
+	  		if(backtrack())
 				return true;
-			else	
-				question[rowIndex][colIndex]=0;
+				
+			else
+				question[col][row] = 0;
 		}
 	}
-	
 	return false;
-			
-}	
+}
 
-bool Sudoku::check(int row,int col)
+bool Sudoku::checkRow(int n)
 {
-	for(i=0;i<9;i++)
-		if(question[row][i]==question[row][col] && i!=col)
-			return false;
-	
+	int check[9]={0};	
 	
 	for(i=0;i<9;i++)
-		if(question[i][col]==question[row][col] && i!=row)
-			return false;
-	
-	
-	int tmpRow=row/3*3;
-	int tmpCol=col/3*3;
-	
-	for(i=tmpRow;i<tmpRow+3;i++)
-		for(j=tmpCol;j<tmpCol+3;j++)
-			if(question[i][j]==question[row][col] && i!=row && j!=col)
+	{
+		if(question[n][i] > 0)
+		{
+			check[question[n][i]-1]++;
+			
+			if(check[question[n][i]-1] != 1)
 				return false;
-	
+		}
+	}
+
 	return true;
 }
 
+
+bool Sudoku::checkCol(int n)
+{
+	int check[9]={0};
+	
+	for(i=0;i<9;i++)
+	{
+		if(question[i][n] > 0)
+		{
+			check[question[i][n]-1]++;
+			
+			if(check[question[i][n]-1]!= 1)
+				return false;
+		}
+	}
+	return true;
+}
+
+bool Sudoku::checkCell(int n)
+{
+	int check[9]={0};
+	int col;
+	int row;
+	
+	for(i=0;i<9;i++)
+	{
+		col = 3*((n-1)/3)+(i/3);
+		row = (i%3)+3*((n-1)%3);
+		if(question[col][row] > 0)
+		{
+			check[question[col][row]-1]++;
+			
+			if(check[question[col][row]-1]!= 1)
+				return false;
+		}
+	}
+	return true;
+}
+
+bool  Sudoku::checkall(int col , int row ,int num)
+{
+	int cell=3*(col/3)+(row/3)+1;
+	int tmpCol,tmpRow;
+	
+	for(i=0;i<9;i++)
+        if (question[col][i]==num)
+			return false;
+    
+    for (i=0;i<9;i++){
+        if (question[i][row]==num)
+			return false;
+    }
+    
+    for (i=0;i<9;i++)
+	{
+    	tmpCol=3*((cell-1)/3)+(i/3);
+		tmpRow=(i%3)+3*((cell-1)%3);
+		
+        if(question[tmpCol][tmpRow]==num)
+			return false;
+    }
+    return true;
+}
+
+void Sudoku::print()
+{
+	for(i=0;i<9;i++)
+	{
+		for(j=0;j<9;j++)
+			printf("%d ",question[i][j]);
+			
+		printf("\n");
+	}
+}
